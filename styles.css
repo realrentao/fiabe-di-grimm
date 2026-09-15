@@ -226,8 +226,9 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 #overlay{display:none;position:fixed;inset:0;background:rgba(35,30,25,.35);z-index:8}
 #overlay.on{display:block}
 
-/* 沉浸模式：播放时隐藏上/下栏（transform 滑出，布局零跳动） */
-#toolbar,#player{transition:transform .25s ease,opacity .25s ease}
+/* 沉浸模式：播放时隐藏上/下栏（滑出渐隐 + 负 margin 折叠占位，阅读区变大） */
+#toolbar{transition:transform .25s ease,opacity .25s ease,margin-top .25s ease}
+#player{transition:transform .25s ease,opacity .25s ease,margin-bottom .25s ease}
 body.immersive #toolbar{transform:translateY(-110%);opacity:0}
 body.immersive #player{transform:translateY(110%);opacity:0}
 

@@ -200,17 +200,31 @@
     prefs.rate = 1; audio.playbackRate = 1; $('rate').value = 1; $('rateVal').textContent = '1.00×'; savePrefs();
   });
 
-  // ---------- 沉浸模式：播放时隐藏上/下栏，点击阅读区显示 ----------
+  // ---------- 沉浸模式：播放时隐藏上/下栏并折叠占位（阅读区变大），点击阅读区显示 ----------
   var immerseTimer = null;
+  function setBars(visible) {
+    var tb = document.getElementById('toolbar'), pl = document.getElementById('player');
+    if (!tb || !pl) return;
+    if (visible) {
+      tb.style.marginTop = '';
+      pl.style.marginBottom = '';
+      document.body.classList.remove('immersive');
+    } else {
+      // 负 margin 折掉两栏占位，#reader 随之撑满
+      tb.style.marginTop = -tb.offsetHeight + 'px';
+      pl.style.marginBottom = -pl.offsetHeight + 'px';
+      document.body.classList.add('immersive');
+    }
+  }
   function barsShow() {
     if (immerseTimer) { clearTimeout(immerseTimer); immerseTimer = null; }
-    document.body.classList.remove('immersive');
+    setBars(true);
   }
   function barsHideSoon(ms) {
     if (immerseTimer) clearTimeout(immerseTimer);
     immerseTimer = setTimeout(function () {
       immerseTimer = null;
-      if (playing) document.body.classList.add('immersive');
+      if (playing) setBars(false);
     }, ms || 1600);
   }
   $('reader').addEventListener('click', function () {
