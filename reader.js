@@ -176,13 +176,13 @@
     setCur(i, { play: true });
   });
 
-  audio.addEventListener('play', function () { playing = true; $('btnPlay').textContent = '❚❚'; });
-  audio.addEventListener('pause', function () { playing = false; $('btnPlay').textContent = '▶'; });
+  audio.addEventListener('play', function () { playing = true; $('btnPlay').textContent = '❚❚'; barsHideSoon(1600); });
+  audio.addEventListener('pause', function () { playing = false; $('btnPlay').textContent = '▶'; barsShow(); });
   audio.addEventListener('error', function () { if (cur >= 0) markNoAudio(cur); });
   audio.addEventListener('ended', function () {
     if (prefs.loop && cur >= 0) { audio.currentTime = 0; play(); return; }
     if (prefs.cont && cur < paras.length - 1) { setCur(cur + 1, { play: true }); }
-    else { playing = false; $('btnPlay').textContent = '▶'; }
+    else { playing = false; $('btnPlay').textContent = '▶'; barsShow(); }
   });
   audio.addEventListener('timeupdate', function () {
     if (!audio.duration) return;
@@ -198,6 +198,26 @@
   });
   $('btnRateReset').addEventListener('click', function () {
     prefs.rate = 1; audio.playbackRate = 1; $('rate').value = 1; $('rateVal').textContent = '1.00×'; savePrefs();
+  });
+
+  // ---------- 沉浸模式：播放时隐藏上/下栏，点击阅读区显示 ----------
+  var immerseTimer = null;
+  function barsShow() {
+    if (immerseTimer) { clearTimeout(immerseTimer); immerseTimer = null; }
+    document.body.classList.remove('immersive');
+  }
+  function barsHideSoon(ms) {
+    if (immerseTimer) clearTimeout(immerseTimer);
+    immerseTimer = setTimeout(function () {
+      immerseTimer = null;
+      if (playing) document.body.classList.add('immersive');
+    }, ms || 1600);
+  }
+  $('reader').addEventListener('click', function () {
+    if (document.body.classList.contains('immersive')) {
+      barsShow();
+      if (playing) barsHideSoon(2500);   // 仍在播放则稍后再次隐藏
+    }
   });
 
   // ---------- prev / next story ----------
