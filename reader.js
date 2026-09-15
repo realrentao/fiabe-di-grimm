@@ -202,6 +202,10 @@
   });
 
   // ---------- init ----------
+  // 手机/窄屏：侧边栏默认收起，点 ☰ 展开
+  if (window.matchMedia && window.matchMedia('(max-width:900px)').matches) {
+    $('sidebar').classList.add('hidden');
+  }
   renderSidebar();
   renderContent();
   applyMode();
