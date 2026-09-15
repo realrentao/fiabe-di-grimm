@@ -1,0 +1,210 @@
+// reader.js — 单篇阅读页逻辑（意中双语 · 段落点读）
+(function () {
+  'use strict';
+  var DATA = window.__GRIMM__;
+  var PREFS_KEY = 'grimm_prefs_v1';
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) {
+    return (s || '').replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  function fmt(t) {
+    if (!isFinite(t) || t < 0) t = 0;
+    var m = Math.floor(t / 60), s = Math.floor(t % 60);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  // ---------- prefs ----------
+  var prefs = { mode: 'pair', fs: 19, cont: true, follow: true, loop: false, rate: 1 };
+  try { var p = JSON.parse(localStorage.getItem(PREFS_KEY)); if (p) prefs = Object.assign(prefs, p); } catch (e) {}
+  function savePrefs() { try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (e) {} }
+
+  // ---------- routing ----------
+  function getStory() {
+    var id = new URLSearchParams(location.search).get('id');
+    var idx = DATA.stories.findIndex(function (s) { return s.id === id; });
+    if (idx < 0) idx = 0;
+    return idx;
+  }
+  var storyIdx = getStory();
+  var story = DATA.stories[storyIdx];
+  var paras = story.paras;
+
+  // ---------- sidebar ----------
+  function renderSidebar() {
+    var q = ($('sideSearch').value || '').trim().toLowerCase();
+    var html = DATA.stories.map(function (s, i) {
+      var on = i === storyIdx ? ' on' : '';
+      var show = !q ||
+        (s.title_it || '').toLowerCase().indexOf(q) >= 0 ||
+        (s.title_zh || '').toLowerCase().indexOf(q) >= 0 ||
+        s.id.indexOf(q) >= 0;
+      if (!show) return '';
+      return '<a class="' + on.trim() + '" data-go="' + i + '">' +
+        '<span class="cn-no">' + s.id + '</span>' +
+        '<span class="cn-it">' + esc(s.title_it) + '</span>' +
+        '<span class="cn-zh">' + esc(s.title_zh) + '</span></a>';
+    }).join('');
+    $('storyNav').innerHTML = html;
+    $('sideStats').innerHTML = '共 <b>' + DATA.stories.length + '</b> 篇 · 当前第 ' + (storyIdx + 1) + ' 篇';
+  }
+  $('storyNav').addEventListener('click', function (e) {
+    var a = e.target.closest('[data-go]'); if (!a) return;
+    location.href = 'lettura.html?id=' + encodeURIComponent(DATA.stories[+a.dataset.go].id);
+  });
+  $('sideSearch').addEventListener('input', renderSidebar);
+
+  // ---------- content ----------
+  function renderContent() {
+    var head =
+      '<div class="chapter-head">' +
+      '<div class="ch-no">N. ' + story.id + ' / ' + DATA.stories.length + '</div>' +
+      '<div class="ch-it">' + esc(story.title_it) + '</div>' +
+      '<div class="ch-zh">' + esc(story.title_zh) + '</div></div>';
+    var body = paras.map(function (p, i) {
+      var zh = p.zh ? '<div class="zh-line">' + esc(p.zh) + '</div>' : '';
+      return '<div class="para" data-idx="' + i + '">' +
+        '<div class="para-bar"><span class="para-idx">§' + (i + 1) + '</span>' +
+        '<button class="para-play" data-play="' + i + '">▶ 朗读</button>' +
+        '<span class="para-noaudio" data-noaudio="' + i + '" style="display:none">未生成音频</span></div>' +
+        '<div class="para-body">' +
+        '<div class="it-line">' + esc(p.it) + '</div>' + zh + '</div></div>';
+    }).join('');
+    $('content').innerHTML = head + body;
+    $('chapterFootLabel').textContent = '第 ' + (storyIdx + 1) + ' / ' + DATA.stories.length + ' 篇';
+  }
+
+  // ---------- mode / font / switches ----------
+  function applyMode() {
+    document.body.className = 'mode-' + prefs.mode;
+    Array.prototype.forEach.call(document.querySelectorAll('#modeSeg button'), function (b) {
+      b.classList.toggle('on', b.dataset.mode === prefs.mode);
+    });
+  }
+  function applyFont() {
+    document.documentElement.style.setProperty('--fs', prefs.fs + 'px');
+  }
+  $('modeSeg').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    prefs.mode = b.dataset.mode; applyMode(); savePrefs();
+  });
+  $('btnFontUp').addEventListener('click', function () { prefs.fs = Math.min(28, prefs.fs + 1); applyFont(); savePrefs(); });
+  $('btnFontDn').addEventListener('click', function () { prefs.fs = Math.max(15, prefs.fs - 1); applyFont(); savePrefs(); });
+  $('chkCont').checked = prefs.cont;
+  $('chkFollow').checked = prefs.follow;
+  $('chkLoop').checked = prefs.loop;
+  $('rate').value = prefs.rate; $('rateVal').textContent = (+prefs.rate).toFixed(2) + '×';
+  $('chkCont').addEventListener('change', function () { prefs.cont = this.checked; savePrefs(); });
+  $('chkFollow').addEventListener('change', function () { prefs.follow = this.checked; savePrefs(); });
+  $('chkLoop').addEventListener('change', function () { prefs.loop = this.checked; savePrefs(); audio.loop = false; });
+
+  // ---------- player ----------
+  var audio = $('audio');
+  var cur = -1;          // 当前段落
+  var playing = false;
+
+  function setCur(i, opts) {
+    opts = opts || {};
+    if (i < 0 || i >= paras.length) return;
+    cur = i;
+    var p = paras[i];
+    Array.prototype.forEach.call(document.querySelectorAll('.para'), function (el) {
+      el.classList.toggle('playing', +el.dataset.idx === i);
+    });
+    $('readProgress').textContent = '§' + (i + 1) + ' / ' + paras.length;
+    $('nowTitle').textContent = '§' + (i + 1) + '  ' + story.title_it;
+    audio.loop = false;
+    audio.src = p.audio;
+    try { audio.load(); } catch (e) {}
+    if (opts.play) play();
+  }
+  function play() {
+    if (cur < 0) { setCur(0, { play: false }); }
+    audio.play().then(function () { playing = true; $('btnPlay').textContent = '❚❚'; })
+      .catch(function () { playing = false; $('btnPlay').textContent = '▶'; });
+  }
+  function pause() { audio.pause(); playing = false; $('btnPlay').textContent = '▶'; }
+  function toggle() { if (playing) pause(); else play(); }
+
+  function markNoAudio(i) {
+    var el = document.querySelector('[data-noaudio="' + i + '"]');
+    if (el) el.style.display = 'inline';
+    var pb = document.querySelector('[data-play="' + i + '"]');
+    if (pb) pb.disabled = true;
+  }
+
+  $('btnPlay').addEventListener('click', toggle);
+  $('btnPrevPara').addEventListener('click', function () { if (cur > 0) setCur(cur - 1, { play: playing }); });
+  $('btnNextPara').addEventListener('click', function () { if (cur < paras.length - 1) setCur(cur + 1, { play: playing }); });
+  $('btnRepeat').addEventListener('click', function () { if (cur >= 0) { audio.currentTime = 0; play(); } });
+
+  $('content').addEventListener('click', function (e) {
+    var playBtn = e.target.closest('[data-play]');
+    var para = e.target.closest('.para');
+    if (!para) return;
+    var i = +para.dataset.idx;
+    if (playBtn) {
+      setCur(i, { play: true }); return;
+    }
+    // 单击段落正文：朗读该段；Shift+单击：从此段开始连续播放
+    prefs.cont = e.shiftKey ? true : prefs.cont;
+    setCur(i, { play: true });
+  });
+
+  audio.addEventListener('play', function () { playing = true; $('btnPlay').textContent = '❚❚'; });
+  audio.addEventListener('pause', function () { playing = false; $('btnPlay').textContent = '▶'; });
+  audio.addEventListener('error', function () { if (cur >= 0) markNoAudio(cur); });
+  audio.addEventListener('ended', function () {
+    if (prefs.loop && cur >= 0) { audio.currentTime = 0; play(); return; }
+    if (prefs.cont && cur < paras.length - 1) { setCur(cur + 1, { play: true }); }
+    else { playing = false; $('btnPlay').textContent = '▶'; }
+  });
+  audio.addEventListener('timeupdate', function () {
+    if (!audio.duration) return;
+    $('seek').value = Math.round((audio.currentTime / audio.duration) * 1000);
+    $('tCur').textContent = fmt(audio.currentTime);
+    $('tDur').textContent = fmt(audio.duration);
+  });
+  $('seek').addEventListener('input', function () {
+    if (audio.duration) audio.currentTime = (this.value / 1000) * audio.duration;
+  });
+  $('rate').addEventListener('input', function () {
+    prefs.rate = +this.value; audio.playbackRate = prefs.rate; $('rateVal').textContent = prefs.rate.toFixed(2) + '×'; savePrefs();
+  });
+  $('btnRateReset').addEventListener('click', function () {
+    prefs.rate = 1; audio.playbackRate = 1; $('rate').value = 1; $('rateVal').textContent = '1.00×'; savePrefs();
+  });
+
+  // ---------- prev / next story ----------
+  function goStory(d) {
+    var ni = storyIdx + d;
+    if (ni < 0 || ni >= DATA.stories.length) return;
+    location.href = 'lettura.html?id=' + encodeURIComponent(DATA.stories[ni].id);
+  }
+  $('btnPrev').addEventListener('click', function () { goStory(-1); });
+  $('btnNext').addEventListener('click', function () { goStory(1); });
+
+  // ---------- misc UI ----------
+  $('btnMenu').addEventListener('click', function () {
+    $('sidebar').classList.toggle('hidden'); $('overlay').classList.toggle('on');
+  });
+  $('overlay').addEventListener('click', function () {
+    $('sidebar').classList.add('hidden'); $('overlay').classList.remove('on');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.code === 'Space') { e.preventDefault(); toggle(); }
+    else if (e.code === 'ArrowLeft') { if (cur > 0) setCur(cur - 1, { play: playing }); }
+    else if (e.code === 'ArrowRight') { if (cur < paras.length - 1) setCur(cur + 1, { play: playing }); }
+    else if (e.key === 'r' || e.key === 'R') { if (cur >= 0) { audio.currentTime = 0; play(); } }
+  });
+
+  // ---------- init ----------
+  renderSidebar();
+  renderContent();
+  applyMode();
+  applyFont();
+  audio.playbackRate = prefs.rate;
+})();
