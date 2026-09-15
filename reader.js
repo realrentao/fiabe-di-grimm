@@ -1,7 +1,7 @@
 // reader.js — 单篇阅读页逻辑（意中双语 · 段落点读）
 (function () {
   'use strict';
-  var DATA = window.__GRIMM__;
+  var DATA = window.__GRIMM_INDEX__;
   var PREFS_KEY = 'grimm_prefs_v1';
 
   function $(id) { return document.getElementById(id); }
@@ -21,16 +21,26 @@
   try { var p = JSON.parse(localStorage.getItem(PREFS_KEY)); if (p) prefs = Object.assign(prefs, p); } catch (e) {}
   function savePrefs() { try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (e) {} }
 
-  // ---------- routing ----------
-  function getStory() {
+  // ---------- routing & per-story data ----------
+  function loadScript(src, cb) {
+    var s = document.createElement('script');
+    s.src = src;
+    s.onload = function () { cb && cb(); };
+    s.onerror = function () { cb && cb(new Error('load fail: ' + src)); };
+    document.head.appendChild(s);
+  }
+  function store() {
+    return window.__GRIMM_STORIES__ || (window.__GRIMM_STORIES__ = {});
+  }
+  function getStoryIdx() {
     var id = new URLSearchParams(location.search).get('id');
     var idx = DATA.stories.findIndex(function (s) { return s.id === id; });
     if (idx < 0) idx = 0;
     return idx;
   }
-  var storyIdx = getStory();
-  var story = DATA.stories[storyIdx];
-  var paras = story.paras;
+  var storyIdx = getStoryIdx();
+  var sid = DATA.stories[storyIdx].id;
+  var story = null, paras = null;   // filled by boot() after story data loads
 
   // ---------- sidebar ----------
   function renderSidebar() {
@@ -107,7 +117,7 @@
 
   function setCur(i, opts) {
     opts = opts || {};
-    if (i < 0 || i >= paras.length) return;
+    if (!paras || i < 0 || i >= paras.length) return;
     cur = i;
     var p = paras[i];
     Array.prototype.forEach.call(document.querySelectorAll('.para'), function (el) {
@@ -207,8 +217,32 @@
     $('sidebar').classList.add('hidden');
   }
   renderSidebar();
-  renderContent();
-  applyMode();
-  applyFont();
-  audio.playbackRate = prefs.rate;
+
+  function boot() {
+    story = store()[sid];
+    paras = story.paras;
+    renderContent();
+    applyMode();
+    applyFont();
+    audio.playbackRate = prefs.rate;
+    // 空闲时预取上/下一篇，切换几乎零等待
+    setTimeout(function () {
+      [storyIdx - 1, storyIdx + 1].forEach(function (j) {
+        var n = DATA.stories[j];
+        if (n && !store()[n.id]) loadScript('data/st/' + n.id + '.js');
+      });
+    }, 1200);
+  }
+
+  if (store()[sid]) {
+    boot();
+  } else {
+    loadScript('data/st/' + sid + '.js', function (err) {
+      if (err) {
+        $('content').innerHTML = '<p style="color:#8a1f2b;padding:30px 0">加载失败，请刷新重试。</p>';
+        return;
+      }
+      boot();
+    });
+  }
 })();

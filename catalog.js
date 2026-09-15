@@ -1,7 +1,7 @@
 // catalog.js — 目录页逻辑
 (function () {
   'use strict';
-  var DATA = window.__GRIMM__;
+  var DATA = window.__GRIMM_INDEX__;
   var grid = document.getElementById('grid');
   var search = document.getElementById('search');
   var stat = document.getElementById('stat');
