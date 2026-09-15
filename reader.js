@@ -176,7 +176,12 @@
     setCur(i, { play: true });
   });
 
-  audio.addEventListener('play', function () { playing = true; $('btnPlay').textContent = '❚❚'; barsHideSoon(1600); });
+  audio.addEventListener('play', function () {
+    playing = true; $('btnPlay').textContent = '❚❚';
+    // 段落切换重启播放时：仅当菜单是"播放自动隐藏"状态才重新倒计时；
+    // 用户正按住菜单或刚唤出菜单时不得打扰
+    if (!holdActive && !userRevealed && !document.body.classList.contains('immersive')) barsHideSoon(1600);
+  });
   audio.addEventListener('pause', function () { playing = false; $('btnPlay').textContent = '▶'; barsShow(); });
   audio.addEventListener('error', function () { if (cur >= 0) markNoAudio(cur); });
   audio.addEventListener('ended', function () {
@@ -201,7 +206,11 @@
   });
 
   // ---------- 沉浸模式：播放时隐藏上/下栏并折叠占位（阅读区变大），点击阅读区显示 ----------
+  // holdActive: 指针/手指停在菜单上；userRevealed: 用户刚点出菜单（倒计时窗口内）
+  // 两者存在时，段落切换的 play 事件不得重启自动隐藏
   var immerseTimer = null;
+  var holdActive = false;
+  var userRevealed = false;
   function setBars(visible) {
     var tb = document.getElementById('toolbar'), pl = document.getElementById('player');
     if (!tb || !pl) return;
@@ -218,20 +227,39 @@
   }
   function barsShow() {
     if (immerseTimer) { clearTimeout(immerseTimer); immerseTimer = null; }
+    userRevealed = false;
     setBars(true);
+  }
+  function holdBars() {
+    holdActive = true;
+    if (immerseTimer) { clearTimeout(immerseTimer); immerseTimer = null; }
   }
   function barsHideSoon(ms) {
     if (immerseTimer) clearTimeout(immerseTimer);
     immerseTimer = setTimeout(function () {
       immerseTimer = null;
+      userRevealed = false;
       if (playing) setBars(false);
     }, ms || 1600);
   }
   $('reader').addEventListener('click', function () {
     if (document.body.classList.contains('immersive')) {
-      barsShow();
+      if (immerseTimer) { clearTimeout(immerseTimer); immerseTimer = null; }
+      userRevealed = true;
+      setBars(true);
       if (playing) barsHideSoon(7500);   // 仍在播放则 7.5s 后再次隐藏
     }
+  });
+  // 手指/鼠标停在菜单上或正在操作时：菜单保持显示，离开后才开始倒计时
+  ['toolbar', 'player'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('pointerenter', holdBars);          // 悬停/按住 → 暂停倒计时
+    el.addEventListener('pointerdown', holdBars);           // 触摸按住兜底
+    el.addEventListener('pointerleave', function () {       // 离开/抬手 → 恢复倒计时
+      holdActive = false;
+      if (playing && !document.body.classList.contains('immersive')) barsHideSoon(7500);
+    });
   });
 
   // ---------- prev / next story ----------
