@@ -230,7 +230,7 @@
   $('reader').addEventListener('click', function () {
     if (document.body.classList.contains('immersive')) {
       barsShow();
-      if (playing) barsHideSoon(2500);   // 仍在播放则稍后再次隐藏
+      if (playing) barsHideSoon(7500);   // 仍在播放则 7.5s 后再次隐藏
     }
   });
 
