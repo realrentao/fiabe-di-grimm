@@ -115,6 +115,18 @@
   var cur = -1;          // 当前段落
   var playing = false;
 
+  // 自动滚动：仅当目标段落不在可视区内时才滚（不抢用户手动滚动）
+  function scrollToPara(i) {
+    if (!prefs.follow) return;
+    var el = document.querySelector('.para[data-idx="' + i + '"]');
+    var rd = $('reader');
+    if (!el || !rd) return;
+    var rr = rd.getBoundingClientRect();
+    var er = el.getBoundingClientRect();
+    var visible = er.top >= rr.top + 8 && er.bottom <= rr.bottom - 8;
+    if (!visible) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
   function setCur(i, opts) {
     opts = opts || {};
     if (!paras || i < 0 || i >= paras.length) return;
@@ -125,6 +137,7 @@
     });
     $('readProgress').textContent = '§' + (i + 1) + ' / ' + paras.length;
     $('nowTitle').textContent = '§' + (i + 1) + '  ' + story.title_it;
+    scrollToPara(i);
     audio.loop = false;
     audio.src = p.audio;
     try { audio.load(); } catch (e) {}
