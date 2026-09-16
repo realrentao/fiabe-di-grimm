@@ -41,14 +41,14 @@
       </div>
 
       <div class="tb-group">
-        <label class="switch" title="当前段落播完自动播放下一段">
+        <label class="switch" title="当前句播完自动播放下一句">
           <input type="checkbox" id="chkCont" checked><span>连续播放</span>
         </label>
-        <label class="switch" title="播放时自动滚动到当前段落">
+        <label class="switch" title="播放时自动滚动到当前句">
           <input type="checkbox" id="chkFollow" checked><span>自动滚动</span>
         </label>
-        <label class="switch" title="反复朗读当前段落">
-          <input type="checkbox" id="chkLoop"><span>段落循环</span>
+        <label class="switch" title="反复朗读当前句">
+          <input type="checkbox" id="chkLoop"><span>单句循环</span>
         </label>
       </div>
 
@@ -75,13 +75,13 @@
     <footer id="player">
       <button id="btnPlay" class="play-btn" title="播放 / 暂停（空格）">▶</button>
       <div class="pl-sent">
-        <button class="icon-btn sm" id="btnPrevPara" title="上一段（←）">⟨</button>
-        <button class="icon-btn sm" id="btnRepeat" title="重复朗读本段（R）">🔁 本段</button>
-        <button class="icon-btn sm" id="btnNextPara" title="下一段（→）">⟩</button>
+        <button class="icon-btn sm" id="btnPrevPara" title="上一句（←）">⟨</button>
+        <button class="icon-btn sm" id="btnRepeat" title="重复朗读本句（R）">🔁 本句</button>
+        <button class="icon-btn sm" id="btnNextPara" title="下一句（→）">⟩</button>
       </div>
       <div class="pl-now">
         <div class="pl-title" id="nowTitle">未在播放</div>
-        <div class="pl-sub" id="nowSub">单击段落＝朗读该段 · Shift+单击＝从此连读</div>
+        <div class="pl-sub" id="nowSub">单击任意句子＝朗读该句 · Shift+单击＝从此连读</div>
       </div>
       <div class="pl-seek">
         <span class="time" id="tCur">0:00</span>

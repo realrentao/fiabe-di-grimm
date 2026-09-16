@@ -70,18 +70,26 @@
   function renderContent() {
     var head =
       '<div class="chapter-head">' +
-      '<div class="ch-no">N. ' + story.id + ' / ' + DATA.stories.length + '</div>' +
+      '<div class="ch-no">N. ' + story.id + ' / ' + DATA.stories.length + ' · 共 ' + paras.length + ' 句</div>' +
       '<div class="ch-it">' + esc(story.title_it) + '</div>' +
       '<div class="ch-zh">' + esc(story.title_zh) + '</div></div>';
-    var body = paras.map(function (p, i) {
+    // 句级单元：一句意大利语 + 对应的一句中文，按原段落(sec)分组保持章节呼吸感
+    var body = '';
+    var curSec = null;
+    paras.forEach(function (p, i) {
+      var sec = p.sec || 1;
+      if (sec !== curSec) {
+        if (curSec !== null) body += '</div>';
+        body += '<div class="sect" data-sec="' + sec + '">';
+        curSec = sec;
+      }
       var zh = p.zh ? '<div class="zh-line">' + esc(p.zh) + '</div>' : '';
-      return '<div class="para" data-idx="' + i + '">' +
-        '<div class="para-bar"><span class="para-idx">§' + (i + 1) + '</span>' +
-        '<button class="para-play" data-play="' + i + '">▶ 朗读</button>' +
-        '<span class="para-noaudio" data-noaudio="' + i + '" style="display:none">未生成音频</span></div>' +
+      body += '<div class="para" data-idx="' + i + '">' +
         '<div class="para-body">' +
+        '<span class="s-no">' + (i + 1) + '</span>' +
         '<div class="it-line">' + esc(p.it) + '</div>' + zh + '</div></div>';
-    }).join('');
+    });
+    if (curSec !== null) body += '</div>';
     $('content').innerHTML = head + body;
     $('chapterFootLabel').textContent = '第 ' + (storyIdx + 1) + ' / ' + DATA.stories.length + ' 篇';
   }
@@ -135,8 +143,8 @@
     Array.prototype.forEach.call(document.querySelectorAll('.para'), function (el) {
       el.classList.toggle('playing', +el.dataset.idx === i);
     });
-    $('readProgress').textContent = '§' + (i + 1) + ' / ' + paras.length;
-    $('nowTitle').textContent = '§' + (i + 1) + '  ' + story.title_it;
+    $('readProgress').textContent = '第 ' + (i + 1) + ' 句 / ' + paras.length;
+    $('nowTitle').textContent = '第 ' + (i + 1) + ' 句 · ' + story.title_it;
     scrollToPara(i);
     audio.loop = false;
     audio.src = p.audio;
@@ -152,10 +160,8 @@
   function toggle() { if (playing) pause(); else play(); }
 
   function markNoAudio(i) {
-    var el = document.querySelector('[data-noaudio="' + i + '"]');
-    if (el) el.style.display = 'inline';
-    var pb = document.querySelector('[data-play="' + i + '"]');
-    if (pb) pb.disabled = true;
+    var el = document.querySelector('.para[data-idx="' + i + '"]');
+    if (el) el.classList.add('noaudio');
   }
 
   $('btnPlay').addEventListener('click', toggle);

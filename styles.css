@@ -153,27 +153,28 @@ a{color:inherit}
 .chapter-head .ch-it{font-size:30px;font-weight:700;color:var(--accent-deep);margin:6px 0 0;letter-spacing:.5px;line-height:1.2}
 .chapter-head .ch-zh{font-size:15px;color:var(--ink-faint);margin-top:7px;letter-spacing:1px;font-family:"Source Han Serif SC","Songti SC","Microsoft YaHei",sans-serif}
 
-/* 段落卡片 */
+/* 句级单元：一句意大利语 + 对应的一句中文 */
+.sect{margin:0 0 20px}
+.sect+.sect{padding-top:16px;border-top:1px dashed var(--line-soft)}
 .para{
-  background:var(--paper);border:1px solid var(--line-soft);border-radius:var(--radius);
-  padding:15px 18px 13px 18px;margin:0 0 15px;position:relative;
-  box-shadow:0 1px 2px rgba(60,40,30,.03);transition:border-color .12s,box-shadow .12s;
+  border:0;border-left:3px solid transparent;border-radius:6px;
+  padding:7px 12px;margin:0 0 2px;position:relative;
+  transition:background .12s,border-left-color .12s;
 }
-.para:hover{border-color:var(--line)}
-.para.playing{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.para-bar{display:flex;align-items:center;gap:8px;margin-bottom:9px;padding-bottom:7px;border-bottom:1px dashed var(--line)}
-.para-idx{font-size:11px;color:var(--ink-faint);font-variant-numeric:tabular-nums;letter-spacing:.5px}
-.para-play{
-  background:var(--accent-soft);border:1px solid var(--accent);color:var(--accent-deep);
-  border-radius:20px;padding:3px 12px;font-size:11.5px;cursor:pointer;white-space:nowrap;
+.para:hover{background:rgba(140,40,40,.05)}
+.para.playing{background:var(--accent-soft);border-left-color:var(--accent)}
+.para.noaudio{opacity:.5}
+.para-body{cursor:pointer;position:relative;padding-left:34px}
+.s-no{
+  position:absolute;left:0;top:4px;min-width:24px;
+  font-size:10.5px;color:var(--ink-faint);opacity:.5;
+  font-variant-numeric:tabular-nums;letter-spacing:.3px;user-select:none;
 }
-.para-play:hover{background:var(--accent);color:#fff}
-.para-noaudio{font-size:11px;color:#b06a2b;margin-left:auto}
-.para-body{cursor:pointer}
+.para.playing .s-no{opacity:1;color:var(--accent);font-weight:700}
 
-.it-line{font-size:var(--fs);line-height:1.95;color:var(--ink);letter-spacing:.1px}
+.it-line{font-size:var(--fs);line-height:1.8;color:var(--ink);letter-spacing:.1px}
 .zh-line{
-  font-size:calc(var(--fs) * .82);line-height:1.78;color:var(--blue);margin-top:2px;
+  font-size:calc(var(--fs) * .8);line-height:1.7;color:var(--blue);margin-top:1px;
   font-family:"Source Han Serif SC","Songti SC","Microsoft YaHei",sans-serif;white-space:pre-wrap;
 }
 
