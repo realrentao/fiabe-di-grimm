@@ -1,1 +1,2 @@
 build/*.log
+audio/*/p*.mp3   # vecchio audio a livello di paragrafo (sostituito da s*.mp3)
