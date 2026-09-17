@@ -140,6 +140,7 @@
   var playing = false;
   var playAll = false;    // 播放全篇模式：从第一句连续播到结尾
   var altZhDone = false; // 意中交替模式下，当前句中文部分是否已播
+  var loadingNext = false; // 自动连播换源时的过渡暂停，不触发菜单显示
 
   // 自动滚动：仅当目标段落不在可视区内时才滚（不抢用户手动滚动）
   function scrollToPara(i) {
@@ -175,9 +176,15 @@
     scrollToPara(i);
     audio.loop = false;
     altZhDone = false;
+    loadingNext = true;            // 换源过程中的过渡暂停不展示菜单
     setAudioSrc(p);
     try { audio.load(); } catch (e) {}
-    if (opts.play) play();
+    if (opts.play) {
+      play();
+      setTimeout(function () { loadingNext = false; }, 600); // 兜底：play 事件未触发时复位
+    } else {
+      loadingNext = false;
+    }
   }
   function play() {
     if (cur < 0) { setCur(0, { play: false }); }
@@ -214,12 +221,16 @@
   });
 
   audio.addEventListener('play', function () {
+    loadingNext = false;          // 真正恢复播放后解除换源守卫
     playing = true; $('btnPlay').textContent = '❚❚';
     // 段落切换重启播放时：仅当菜单是"播放自动隐藏"状态才重新倒计时；
     // 用户正按住菜单或刚唤出菜单时不得打扰
     if (!holdActive && !userRevealed && !document.body.classList.contains('immersive')) barsHideSoon(1600);
   });
-  audio.addEventListener('pause', function () { playing = false; $('btnPlay').textContent = '▶'; barsShow(); });
+  audio.addEventListener('pause', function () {
+    playing = false; $('btnPlay').textContent = '▶';
+    if (!loadingNext) barsShow();  // 自动换源导致的过渡暂停不展示菜单
+  });
   audio.addEventListener('error', function () { if (cur >= 0) markNoAudio(cur); });
   audio.addEventListener('ended', function () {
     if (prefs.loop && cur >= 0) { audio.currentTime = 0; play(); return; }
@@ -227,6 +238,7 @@
     if (prefs.lang === 'alt' && !altZhDone && cur >= 0) {
       var p = paras[cur];
       if (p.audio_zh && p.audio_zh.length) {
+        loadingNext = true;       // 意→中 换源过渡暂停不展示菜单
         audio.src = p.audio_zh; audio.load(); play(); altZhDone = true; return;
       }
       altZhDone = true; // 无中文音频则跳过中文部分
