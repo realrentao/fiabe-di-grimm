@@ -86,7 +86,8 @@ a{color:inherit}
 
 /* ================= 阅读页 框架 ================= */
 #app{display:flex;min-height:100vh}
-#app.reader{height:100vh;overflow:hidden}
+/* 用动态视口高度(dvh)，避免全屏时 100vh 大于真实可见区域导致底部播放器被裁切；旧浏览器回退 100vh */
+#app.reader{height:100vh;height:100dvh;overflow:hidden}
 
 /* 侧边栏 */
 #sidebar{
@@ -146,7 +147,7 @@ a{color:inherit}
 .switch input{accent-color:var(--accent);width:15px;height:15px;cursor:pointer}
 
 /* 阅读区 */
-#reader{flex:1;overflow-y:auto;scroll-behavior:smooth}
+#reader{flex:1;min-height:0;overflow-y:auto;scroll-behavior:smooth}
 #content{max-width:820px;margin:0 auto;padding:34px 30px 20px}
 .chapter-head{margin:0 0 30px;padding-bottom:18px;border-bottom:2px solid var(--accent-soft)}
 .chapter-head .ch-no{font-size:12px;color:var(--ink-faint);letter-spacing:2px;font-variant-numeric:tabular-nums}
@@ -234,7 +235,7 @@ body.immersive #toolbar{transform:translateY(-110%);opacity:0}
 body.immersive #player{transform:translateY(110%);opacity:0}
 
 @media (max-width:900px){
-  #sidebar{position:fixed;z-index:9;height:100vh;box-shadow:var(--shadow);margin-left:0}
+  #sidebar{position:fixed;z-index:9;height:100vh;height:100dvh;box-shadow:var(--shadow);margin-left:0}
   #sidebar.hidden{margin-left:-248px}
   #content,#chapterFoot{padding-left:18px;padding-right:18px}
   .pl-now{display:none}
