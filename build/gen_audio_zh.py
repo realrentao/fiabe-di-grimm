@@ -9,7 +9,7 @@ import edge_tts
 
 OUT = r"D:/workbuddy工作区/2026-08-23-21-28-02/grimm-fiabe"
 VOICE = "zh-CN-XiaoxiaoNeural"
-IDS = ["01", "02", "03"]
+IDS = ["01", "02", "03", "04"]
 CONCURRENCY = 12
 LOG = os.path.join(OUT, "build", "audio_zh_gen.log")
 
