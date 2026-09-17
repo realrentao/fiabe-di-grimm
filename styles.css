@@ -154,8 +154,8 @@ a{color:inherit}
 .chapter-head .ch-zh{font-size:15px;color:var(--ink-faint);margin-top:7px;letter-spacing:1px;font-family:"Source Han Serif SC","Songti SC","Microsoft YaHei",sans-serif}
 
 /* 句级单元：一句意大利语 + 对应的一句中文 */
-.sect{margin:0 0 20px}
-.sect+.sect{padding-top:16px;border-top:1px dashed var(--line-soft)}
+.sect{margin:0 0 4px}
+.sect+.sect{padding-top:8px;border-top:1px dashed var(--line-soft)}
 .para{
   border:0;border-left:3px solid transparent;border-radius:6px;
   padding:7px 12px;margin:0 0 2px;position:relative;
