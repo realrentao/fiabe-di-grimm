@@ -208,6 +208,13 @@ body.mode-col .zh-line{flex:1 1 44%;min-width:0;margin-top:0;padding-left:18px;b
   border:0;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);
 }
 .play-btn:hover{background:var(--accent-deep)}
+.play-all-btn{
+  flex:0 0 auto;padding:0 16px;height:42px;border-radius:21px;background:transparent;color:var(--accent-deep);
+  border:2px solid var(--accent);cursor:pointer;font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;
+  box-shadow:var(--shadow);white-space:nowrap;
+}
+.play-all-btn:hover{background:var(--accent-soft)}
+.play-all-btn.active{background:var(--accent);color:#fff}
 .pl-sent{display:flex;align-items:center;gap:4px}
 .pl-sent .icon-btn{padding:6px 9px}
 #btnRepeat{font-size:11px;white-space:nowrap}

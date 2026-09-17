@@ -138,6 +138,7 @@
   var audio = $('audio');
   var cur = -1;          // 当前段落
   var playing = false;
+  var playAll = false;    // 播放全篇模式：从第一句连续播到结尾
   var altZhDone = false; // 意中交替模式下，当前句中文部分是否已播
 
   // 自动滚动：仅当目标段落不在可视区内时才滚（不抢用户手动滚动）
@@ -192,8 +193,9 @@
   }
 
   $('btnPlay').addEventListener('click', toggle);
-  $('btnPrevPara').addEventListener('click', function () { if (cur > 0) setCur(cur - 1, { play: playing }); });
-  $('btnNextPara').addEventListener('click', function () { if (cur < paras.length - 1) setCur(cur + 1, { play: playing }); });
+  $('btnPlayAll').addEventListener('click', function () { playAll = true; $('btnPlayAll').classList.add('active'); setCur(0, { play: true }); });
+  $('btnPrevPara').addEventListener('click', function () { if (cur > 0) { playAll = false; $('btnPlayAll').classList.remove('active'); setCur(cur - 1, { play: playing }); } });
+  $('btnNextPara').addEventListener('click', function () { if (cur < paras.length - 1) { playAll = false; $('btnPlayAll').classList.remove('active'); setCur(cur + 1, { play: playing }); } });
   $('btnRepeat').addEventListener('click', function () { if (cur >= 0) { audio.currentTime = 0; play(); } });
 
   $('content').addEventListener('click', function (e) {
@@ -201,6 +203,8 @@
     var para = e.target.closest('.para');
     if (!para) return;
     var i = +para.dataset.idx;
+    // 手动点选某句：退出“播放全篇”连播模式（仅播该句）
+    playAll = false; $('btnPlayAll').classList.remove('active');
     if (playBtn) {
       setCur(i, { play: true }); return;
     }
@@ -227,8 +231,8 @@
       }
       altZhDone = true; // 无中文音频则跳过中文部分
     }
-    if (prefs.cont && cur < paras.length - 1) { setCur(cur + 1, { play: true }); }
-    else { playing = false; $('btnPlay').textContent = '▶'; barsShow(); }
+    if ((prefs.cont || playAll) && cur < paras.length - 1) { setCur(cur + 1, { play: true }); }
+    else { playing = false; playAll = false; $('btnPlay').textContent = '▶'; $('btnPlayAll').classList.remove('active'); barsShow(); }
   });
   audio.addEventListener('timeupdate', function () {
     if (!audio.duration) return;
@@ -337,6 +341,8 @@
   function boot() {
     story = store()[sid];
     paras = story.paras;
+    playAll = false;
+    var paBtn = document.getElementById('btnPlayAll'); if (paBtn) paBtn.classList.remove('active');
     renderContent();
     applyMode();
     applyFont();
