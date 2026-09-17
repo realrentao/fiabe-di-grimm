@@ -17,7 +17,7 @@
   }
 
   // ---------- prefs ----------
-  var prefs = { mode: 'pair', fs: 19, cont: false, follow: true, loop: false, rate: 1 };
+  var prefs = { mode: 'pair', fs: 19, cont: false, follow: true, loop: false, rate: 1, lang: 'it' };
   try { var p = JSON.parse(localStorage.getItem(PREFS_KEY)); if (p) prefs = Object.assign(prefs, p); } catch (e) {}
   function savePrefs() { try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (e) {} }
 
@@ -118,10 +118,27 @@
   $('chkFollow').addEventListener('change', function () { prefs.follow = this.checked; savePrefs(); });
   $('chkLoop').addEventListener('change', function () { prefs.loop = this.checked; savePrefs(); audio.loop = false; });
 
+  // ---------- 朗读语言：意语 / 中文 / 意中交替 ----------
+  var LANG_LABELS = { it: '意大利语', zh: '中文', alt: '意语 + 中文 交替' };
+  function applyLang() {
+    Array.prototype.forEach.call(document.querySelectorAll('#langSeg button'), function (b) {
+      b.classList.toggle('on', b.dataset.lang === prefs.lang);
+    });
+  }
+  applyLang();
+  $('langSeg').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    prefs.lang = b.dataset.lang; applyLang(); savePrefs();
+    $('nowSub').textContent = '朗读语言：' + (LANG_LABELS[prefs.lang] || '') + ' · 单击句子朗读';
+    // 若正在播放，立即按新语言重播当前句
+    if (cur >= 0 && playing) { setCur(cur, { play: true }); }
+  });
+
   // ---------- player ----------
   var audio = $('audio');
   var cur = -1;          // 当前段落
   var playing = false;
+  var altZhDone = false; // 意中交替模式下，当前句中文部分是否已播
 
   // 自动滚动：仅当目标段落不在可视区内时才滚（不抢用户手动滚动）
   function scrollToPara(i) {
@@ -135,6 +152,15 @@
     if (!visible) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
+  function setAudioSrc(p) {
+    if (prefs.lang === 'zh') {
+      audio.src = (p.audio_zh && p.audio_zh.length) ? p.audio_zh : p.audio;
+      altZhDone = true;
+    } else {
+      audio.src = p.audio;
+      altZhDone = false;
+    }
+  }
   function setCur(i, opts) {
     opts = opts || {};
     if (!paras || i < 0 || i >= paras.length) return;
@@ -147,7 +173,8 @@
     $('nowTitle').textContent = '第 ' + (i + 1) + ' 句 · ' + story.title_it;
     scrollToPara(i);
     audio.loop = false;
-    audio.src = p.audio;
+    altZhDone = false;
+    setAudioSrc(p);
     try { audio.load(); } catch (e) {}
     if (opts.play) play();
   }
@@ -192,6 +219,14 @@
   audio.addEventListener('error', function () { if (cur >= 0) markNoAudio(cur); });
   audio.addEventListener('ended', function () {
     if (prefs.loop && cur >= 0) { audio.currentTime = 0; play(); return; }
+    // 意中交替：本句意语播完 → 接着播中文，再进下一句
+    if (prefs.lang === 'alt' && !altZhDone && cur >= 0) {
+      var p = paras[cur];
+      if (p.audio_zh && p.audio_zh.length) {
+        audio.src = p.audio_zh; audio.load(); play(); altZhDone = true; return;
+      }
+      altZhDone = true; // 无中文音频则跳过中文部分
+    }
     if (prefs.cont && cur < paras.length - 1) { setCur(cur + 1, { play: true }); }
     else { playing = false; $('btnPlay').textContent = '▶'; barsShow(); }
   });
