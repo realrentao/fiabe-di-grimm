@@ -17,7 +17,7 @@
   }
 
   // ---------- prefs ----------
-  var prefs = { mode: 'pair', fs: 19, cont: true, follow: true, loop: false, rate: 1 };
+  var prefs = { mode: 'pair', fs: 19, cont: false, follow: true, loop: false, rate: 1 };
   try { var p = JSON.parse(localStorage.getItem(PREFS_KEY)); if (p) prefs = Object.assign(prefs, p); } catch (e) {}
   function savePrefs() { try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (e) {} }
 
