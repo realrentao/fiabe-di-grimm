@@ -256,6 +256,10 @@
   var immerseTimer = null;
   var holdActive = false;
   var userRevealed = false;
+  // 菜单自动隐藏（沉浸模式）仅限手机/窄屏；桌面端始终显示菜单栏
+  function isMobile() {
+    return window.matchMedia && window.matchMedia('(max-width:900px)').matches;
+  }
   function setBars(visible) {
     var tb = document.getElementById('toolbar'), pl = document.getElementById('player');
     if (!tb || !pl) return;
@@ -264,6 +268,7 @@
       pl.style.marginBottom = '';
       document.body.classList.remove('immersive');
     } else {
+      if (!isMobile()) return;  // 桌面端不隐藏菜单栏
       // 负 margin 折掉两栏占位，#reader 随之撑满
       tb.style.marginTop = -tb.offsetHeight + 'px';
       pl.style.marginBottom = -pl.offsetHeight + 'px';
@@ -280,6 +285,7 @@
     if (immerseTimer) { clearTimeout(immerseTimer); immerseTimer = null; }
   }
   function barsHideSoon(ms) {
+    if (!isMobile()) return;  // 桌面端不启动自动隐藏计时
     if (immerseTimer) clearTimeout(immerseTimer);
     immerseTimer = setTimeout(function () {
       immerseTimer = null;
@@ -336,6 +342,10 @@
   if (window.matchMedia && window.matchMedia('(max-width:900px)').matches) {
     $('sidebar').classList.add('hidden');
   }
+  // 桌面端始终显示菜单栏：跨断点切到宽屏时，强制复位任何残留的沉浸态
+  window.addEventListener('resize', function () {
+    if (!isMobile() && document.body.classList.contains('immersive')) barsShow();
+  });
   renderSidebar();
 
   function boot() {
