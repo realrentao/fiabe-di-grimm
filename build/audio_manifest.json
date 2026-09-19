@@ -2744,223 +2744,299 @@
     "paras": [
       {
         "pid": "s001",
-        "text": "C'era una volta un re e una regina che vivevano insieme tranquillamente e avevano dodici figli tutti maschi."
+        "text": "C'erano una volta un re e una regina che vivevano felici e avevano dodici figli, tutti maschi."
       },
       {
         "pid": "s002",
-        "text": "Allora il re disse alla moglie: \"Se il tredicesimo figlio che metterai al mondo sarà una bambina, i dodici maschi moriranno, perché‚ ella abbia grandi ricchezze e il regno tocchi a lei sola.\" E ordinò dodici bare, già riempite di trucioli, e in ciascuna c'era un guancialino funebre; le fece portare in una stanza chiusa a tutti, diede poi la chiave alla regina e le ordinò di non parlare a nessuno della cosa."
+        "text": "Una volta il re disse alla regina:«Se il tredicesimo figlio che mi metterai al mondo sarà una femmina, i dodici maschi dovranno morire perché tutte le ricchezze siano sue e il regno tocchi a lei sola»."
       },
       {
         "pid": "s003",
-        "text": "Ma la madre passava tutto il giorno in grande tristezza; e il più piccolo dei figli, che le stava sempre accanto e che ella aveva chiamato con il nome biblico di Beniamino, le disse: \"Cara mamma, perché‚ sei così triste?\" - \"Mio diletto, non posso dirtelo,\" rispose la regina."
+        "text": "Così ordinò dodici bare già riempite di trucioli e ognuna col suo cuscinetto da morto e le fece portare in una stanzina chiusa e diede le chiavi alla regina e le ordinò di non farne parola con nessuno."
       },
       {
         "pid": "s004",
-        "text": "Ma egli non le diede pace fino a quando ella non gli aprì la stanza e gli mostrò le dodici bare già riempite di trucioli."
+        "text": "Ma la madre se ne stava tutto il giorno a piangere, tanto che il più piccino dei suoi figli, che le era sempre vicino e che lei chiamava col nome biblico di Beniamino, le disse:«Perché sei così triste?»."
       },
       {
         "pid": "s005",
-        "text": "Poi disse: \"Mio carissimo Beniamino, queste bare le ha fatte fare tuo padre per te e i tuoi undici fratelli, poiché‚ se metterò al mondo una bambina voi dovrete essere tutti uccisi e sepolti qui.\" Allora il figlio rispose: \"Non piangere, cara mamma, ce la caveremo e ce ne andremo.\" Ella disse: \"Vai nel bosco con i tuoi undici fratelli e uno stia sempre di guardia sull'albero più alto che troverete, e osservi la torre qui nel castello."
+        "text": "«Figlio adorato», disse la madre,«non posso dirtelo.»"
       },
       {
         "pid": "s006",
-        "text": "Se nascerà un maschietto, isserò una bandiera bianca e voi potrete ritornare; se nascerà una femmina isserò una bandiera rossa, e allora fuggite e che il buon Dio abbia cura di voi."
+        "text": "Ma lui non le lasciava pace e allora andò nella stanzetta, la aprì e gli mostrò le dodici bare con i trucioli dentro."
       },
       {
         "pid": "s007",
-        "text": "Ogni notte mi alzerò a pregare per voi, d'inverno che possiate scaldarvi al fuoco, d'estate che la calura non vi faccia languire.\""
+        "text": "Poi disse:«Carissimo Beniamino, queste bare le ha fatte preparare tuo padre, sono per te e i tuoi fratelli, perché se io darò alla luce una femmina, voi tutti dovrete essere uccisi e seppelliti qui»."
       },
       {
         "pid": "s008",
-        "text": "Dopo avere ricevuto la sua benedizione, i figli se ne andarono nel bosco."
+        "text": "E mentre parlava piangeva e il figlio la consolava dicendo:«Non piangere mamma, vedrai faremo qualche cosa e ce ne andremo»."
       },
       {
         "pid": "s009",
-        "text": "Stavano di guardia uno dopo l'altro sulla quercia più alta e osservavano la torre."
+        "text": "Allora la madre disse:«Va nel bosco con i tuoi fratelli e fa in modo che uno stia sempre di guardia sull'albero più alto e osservi la torre del castello. Se nascerà un maschio, farò esporre una bandiera bianca e voi potrete tornare, se nascerà una femmina, isserò una bandiera rossa, allora fuggite più in fretta che potete e che Dio vi aiuti. Tutte le notti mi alzerò e pregherò per voi, d'inverno perché troviate fuoco, d'estate perché l'arsura non vi uccida»."
       },
       {
         "pid": "s010",
-        "text": "Quando furono passati undici giorni e il turno toccò a Beniamino, egli vide che veniva issata una bandiera, ma non era bianca bensì rosso sangue e annunciava che dovevano morire tutti."
+        "text": "Dopo aver ricevuto la benedizione della madre i figli andarono nel bosco."
       },
       {
         "pid": "s011",
-        "text": "Quando i fratelli lo seppero andarono in collera e dissero: \"Dovremmo morire a causa di una femmina!"
+        "text": "Uno dopo l'altro montavano la guardia, stavano sulla quercia più alta ed osservavano la torre."
       },
       {
         "pid": "s012",
-        "text": "Giuriamo che quando ne incontreremo una ci vendicheremo e faremo scorrere il suo sangue vermiglio.\""
+        "text": "Passati undici giorni, venne il turno di Beniamino ed egli vide che veniva esposta una bandiera: purtroppo non era bianca, ma proprio la bandiera rosso-sangue che annunciava che loro dovevano morire."
       },
       {
         "pid": "s013",
-        "text": "Poi entrarono nel profondo del bosco dove era più buio e là trovarono una piccola casetta vuota, ma era stregata."
+        "text": "Quando i fratelli udirono ciò si adirarono e dissero:«Per colpa di una femmina dovremo morire! Giuriamo di vendicarci. Non appena c'imbatteremo in una femmina, scorrerà il suo sangue»."
       },
       {
         "pid": "s014",
-        "text": "Allora dissero: \"Qui abiteremo; e tu Beniamino, che sei il più piccolo e il più debole, rimarrai a badare alla casa, mentre noi andremo a cercare da mangiare.\" Andavano nella foresta e uccidevano lepri, caprioli selvatici, uccelli, piccioncini e tutto ciò che vi era da mangiare; li portavano a Beniamino che doveva cucinarli perché‚ potessero sfamarsi. Vissero insieme nella casetta dieci anni e il tempo non parve loro lungo."
+        "text": "Poi si inoltrarono nella foresta e lì nel folto trovarono una piccola casetta fatata che era vuota."
       },
       {
         "pid": "s015",
-        "text": "Nel frattempo la bambina che la regina aveva partorito era cresciuta, era bella e aveva una stella d'oro in fronte."
+        "text": "Allora si dissero:«Abiteremo qui e tu Beniamino che sei il più piccolo e debole, tu baderai alla casa, noi andremo in cerca di cibo»."
       },
       {
         "pid": "s016",
-        "text": "Una volta, mentre si faceva il bucato, vide dodici camicie da uomo e chiese a sua madre: \"Di chi sono queste dodici camicie?"
+        "text": "Così andavano nel bosco e cacciavano lepri e caprioli, uccelli e tortore, ed ogni animale buono da mangiare, lo portavano a Beniamino che doveva prepararlo in modo che tutti si potessero sfamare."
       },
       {
         "pid": "s017",
-        "text": "Per il babbo sono troppo piccole.\" Allora la regina rispose con il cuore grosso: \"Bimba cara, sono dei tuoi dodici fratelli.\" Disse la fanciulla: \"Dove sono i miei dodici fratelli?"
+        "text": "In quella casetta vissero dieci anni e il tempo passò in fretta."
       },
       {
         "pid": "s018",
-        "text": "Non ne ho mai sentito parlare.\" La madre rispose: \"Lo sa Iddio dove sono, vagano in giro per il mondo.\" Prese allora la fanciulla, le aprì la stanza e le mostrò le dodici bare con i trucioli e i guancialini funebri."
+        "text": "La figlioletta, che la regina aveva partorito, era cresciuta."
       },
       {
         "pid": "s019",
-        "text": "\"Queste bare,\" disse, \"erano destinate a loro, ma essi sono fuggiti di nascosto, prima che tu nascessi\" e le raccontò quel che era accaduto."
+        "text": "Era buona e bella e aveva una stella d'oro sulla fronte."
       },
       {
         "pid": "s020",
-        "text": "Allora la fanciulla disse: \"Cara madre, non piangere; andrò a cercare i miei fratelli.\" Prese le dodici camicie, partì e si addentrò subito nella gran foresta."
+        "text": "Una volta che si stava facendo il bucato grande, la bambina vide dodici camicie maschili fra l'altra biancheria e chiese a sua madre:«Di chi sono queste dodici camicie, per mio padre sono di certo troppo piccole»."
       },
       {
         "pid": "s021",
-        "text": "Camminò tutto il giorno e la sera giunse alla casetta incantata."
+        "text": "Allora la madre rispose con il cuore che le pesava per l'angoscia:«Figlia cara, queste camicie appartengono ai tuoi dodici fratelli»."
       },
       {
         "pid": "s022",
-        "text": "Entrò e trovò un ragazzino che le chiese: \"Donde vieni e dove vai?\" e si meravigliò che fosse così bella, portasse abiti regali e avesse una stella in fronte."
+        "text": "La fanciulla chiese:«Dove sono i miei fratelli, mai ne ho sentito parlare»."
       },
       {
         "pid": "s023",
-        "text": "Ed ella rispose: \"Sono una principessa e cerco i miei dodici fratelli e andrò fin dove il cielo è azzurro pur di trovarli.\" E gli mostrò le loro dodici camicie."
+        "text": "«Dio solo lo sa», disse la madre,«penso che vivano errabondi per il mondo.»"
       },
       {
         "pid": "s024",
-        "text": "Allora Beniamino capì che era sua sorella e disse: \"Sono Beniamino il tuo fratello più giovane!\" Ella si mise a piangere dalla gioia e Beniamino fece lo stesso, e si baciarono e si abbracciarono con grande affetto."
+        "text": "Poi condusse la figlia nella stanza e le mostrò le dodici bare con i trucioli e i cuscini da morto."
       },
       {
         "pid": "s025",
-        "text": "Poi egli disse: \"Cara sorella, c'è ancora un problema: avevamo deciso e pattuito che ogni ragazza che ci incontrasse doveva morire, poiché‚ fummo costretti a lasciare il nostro regno per una ragazza.\" Allora ella disse: \"Morirò volentieri se così potrò liberare i miei dodici fratelli.\" - \"No,\" egli rispose, \"tu non devi morire; nasconditi sotto questa tinozza fino a quando arriveranno gli undici fratelli, poi mi metterò io d'accordo con loro.\" La fanciulla obbedì e quando scese la notte gli altri tornarono dalla caccia e la cena era pronta."
+        "text": "«Queste bare erano state preparate per i tuoi dodici fratelli - ma loro sono fuggiti di nascosto prima che tu nascessi», e le raccontò quello che era accaduto."
       },
       {
         "pid": "s026",
-        "text": "Sedettero a tavola e mentre mangiavano domandarono: \"Che c'è di nuovo?\" Beniamino disse: \"Non sapete nulla?\" - \"No,\" risposero."
+        "text": "Allora la fanciulla disse:«Cara madre, non piangere, io andrò in cerca dei miei fratelli»."
       },
       {
         "pid": "s027",
-        "text": "Egli continuò: \"Voi siete andati nella foresta e io sono rimasto a casa, eppure ne so più di voi.\" - \"Orsù raccontaci!\" esclamarono gli altri."
+        "text": "Poi prese le dodici camicie e se ne andò nella grande foresta."
       },
       {
         "pid": "s028",
-        "text": "Egli rispose: \"Mi promettete anche che la prima fanciulla che incontreremo non sarà uccisa?\" - \"Sì,\" esclamarono tutti, \"le faremo grazia; ma racconta!\" Allora egli disse: \"C'è qui nostra sorella.\" Sollevò la tinozza e ne uscì la principessa in abiti regali con la stella d'oro in fronte: era molto bella, delicata e fine."
+        "text": "Camminò un intero giorno e verso sera arrivò alla casa fatata."
       },
       {
         "pid": "s029",
-        "text": "Tutti allora se ne rallegrarono, le saltarono al collo, la baciarono e l'amarono con tutto il cuore."
+        "text": "Entrò e trovò un ragazzo che le chiese:«Da dove vieni e che cosa vuoi?», e si meravigliò di vederla così bella, che portasse abiti regali e che avesse una stella d'oro in fronte."
       },
       {
         "pid": "s030",
-        "text": "Ora ella rimaneva a casa con Beniamino e lo aiutava nei lavori domestici."
+        "text": "Ma la fanciulla gli disse:«Sono una principessa e cerco i miei dodici fratelli e me ne andrò anche in capo al mondo fino a quando non li avrò trovati»."
       },
       {
         "pid": "s031",
-        "text": "Gli undici fratelli andavano nel bosco e cercavano selvaggina, caprioli, lepri, uccelli e piccioncini perché‚ potessero mangiare, e la sorella e Beniamino pensavano a prepararli."
+        "text": "Poi gli mostrò le dodici camicie."
       },
       {
         "pid": "s032",
-        "text": "Ella cercava la legna per cuocere e le erbe per la verdura e le metteva sul fuoco, cosicché‚ il pranzo era sempre pronto quando gli undici rientravano."
+        "text": "Allora Beniamino capì che era sua sorella e le disse:«Io sono Beniamino, il tuo fratello minore»."
       },
       {
         "pid": "s033",
-        "text": "Teneva inoltre in ordine la casetta e preparava i lettini con biancheria bianca e pulita, e i fratelli erano sempre contenti e vivevano in grande armonia con lei."
+        "text": "E lei cominciò a piangere di gioia e Beniamino con lei e si baciarono e abbracciarono."
       },
       {
         "pid": "s034",
-        "text": "Per un certo periodo di tempo i due a casa prepararono buoni cibi e, quando si ritrovavano tutti insieme, sedevano, mangiavano, bevevano ed erano felici."
+        "text": "Ma poi Beniamino disse:«Sorellina cara, c'è ancora una cosa che ti devo dire, noi ci siamo fatti la promessa che ogni fanciulla che avessimo incontrato sarebbe morta, perché proprio per una fanciulla dovemmo lasciare il nostro regno»."
       },
       {
         "pid": "s035",
-        "text": "Ma la casetta stregata aveva un piccolo giardinetto nel quale c'erano dodici gigli (chiamati anche fiori di Sant'Antonio)."
+        "text": "Allora lei disse:«Morrò volentieri se con la mia morte potrò salvare i miei dodici fratelli»."
       },
       {
         "pid": "s036",
-        "text": "Un giorno ella volle fare un piacere ai suoi fratelli, colse i dodici fiori e pensava di regalarne uno a ciascuno durante la cena."
+        "text": "«No», rispose Beniamino,«tu non devi morire, nasconditi sotto quella tinozza quando i fratelli torneranno e finché io riuscirò a convincerli.»"
       },
       {
         "pid": "s037",
-        "text": "Ma, come ebbe colto i fiori, in quel medesimo istante i dodici fratelli furono tramutati in dodici corvi che volarono via per la foresta, e anche la casa e il giardino sparirono."
+        "text": "Così fece, e quando venne notte, i fratelli tornarono dalla caccia e la cena era pronta."
       },
       {
         "pid": "s038",
-        "text": "Ora la povera fanciulla era sola nella foresta selvaggia, e quando si guardò intorno vi era accanto a lei una vecchia che disse: \"Ah, bimba mia, che hai fatto?"
+        "text": "E quando furono a tavola chiesero:«Cosa c'è di nuovo?»."
       },
       {
         "pid": "s039",
-        "text": "Perché‚ non hai lasciato stare i dodici fiori bianchi?"
+        "text": "Allora Beniamino disse:«Non sapete nulla?»."
       },
       {
         "pid": "s040",
-        "text": "Erano i tuoi fratelli che ora sono tramutati in corvi per sempre.\" La ragazza disse piangendo: \"Non vi è nessun modo per liberarli?\" - \"No,\" disse la vecchia, \"non ve n'è che uno in tutto il mondo, ma è così difficile che non riuscirai a liberarli: perché‚ devi essere muta per sette anni, non puoi n‚ parlare n‚ ridere e se dici una sola parola, e manca soltanto un'ora ai sette anni, tutto è vano e i tuoi fratelli saranno uccisi da quella sola parola.\""
+        "text": "«No», risposero."
       },
       {
         "pid": "s041",
-        "text": "Allora la ragazza disse in cuor suo: \"Voglio liberare i miei fratelli ad ogni costo!\" Andò in cerca di un albero alto, ci si arrampicò, e li filava senza parlare ni ridere."
+        "text": "E Beniamino continuò:«Voi siete stati nel bosco e io sono rimasto a casa, eppure so più di voi»."
       },
       {
         "pid": "s042",
-        "text": "Ora avvenne che un re andò a caccia nella foresta; aveva un grosso levriero che corse all'albero sul quale si trovava seduta la fanciulla e cominciò a saltare tutt'attorno abbaiando e latrando verso la cima."
+        "text": "«Racconta, dunque», dissero gli altri."
       },
       {
         "pid": "s043",
-        "text": "Il re allora si avvicinò e vide la bella principessa con la stella d'oro sulla fronte e fu così rapito dalla sua bellezza che le domandò se voleva diventare sua sposa."
+        "text": "«Ma voi mi promettete che la prima fanciulla che incontrerete non la ucciderete.»"
       },
       {
         "pid": "s044",
-        "text": "Ella non rispose, ma fece un lieve cenno con il capo."
+        "text": "«Ma sì», dissero gli altri,«le faremo grazia, ma ora racconta.»"
       },
       {
         "pid": "s045",
-        "text": "Allora egli salì sull'albero, la portò giù e la mise sul suo cavallo."
+        "text": "«Ecco», disse,«nostra sorella è qui.»"
       },
       {
         "pid": "s046",
-        "text": "Le nozze furono celebrate con gran pompa e tripudio anche se la sposa non parlava n‚ rideva."
+        "text": "E sollevò la tinozza e ne uscì la fanciulla con i suoi vestiti regali e la stella d'oro sulla fronte, ed era veramente bella, delicata e gentile."
       },
       {
         "pid": "s047",
-        "text": "Quand'ebbero trascorso insieme felici un paio di anni, la matrigna del re, che era una donna cattiva, incominciò a calunniare la giovane regina e disse al re: \"E' una volgare accattona quella che ti sei portato in casa, chissà quali malvagità combina in segreto!"
+        "text": "Allora tutti si rallegrarono, la abbracciarono, la baciarono e l'amarono con tutto il cuore."
       },
       {
         "pid": "s048",
-        "text": "Se è muta e non può parlare, potrebbe almeno ridere; ma chi non ride, ha una cattiva coscienza.\" Il re da principio non volle crederle, ma la madre insistette così tanto che egli alla fine si lasciò convincere e la condannò a morte."
+        "text": "Poi rimase a casa con Beniamino per aiutarlo nei lavori di casa."
       },
       {
         "pid": "s049",
-        "text": "Nel cortile fu così acceso un grande fuoco da cui ella doveva essere bruciata; e il re, da sopra, guardava con gli occhi pieni di lacrime, poiché‚ l'amava ancora tanto."
+        "text": "Gli undici andavano nel bosco, in cerca di selvaggina, caprioli, lepri, uccelli e tortore, per avere da mangiare e Beniamino e la sorella provvedevano a preparare ogni cosa."
       },
       {
         "pid": "s050",
-        "text": "E quando era già legata al palo, e le lingue di fuoco lambivano già le sue vesti, ecco trascorso l'ultimo istante dei sette anni."
+        "text": "Cercavano legna nel bosco e erbaggi e li mettevano nella pentola sul fuoco in modo che quando gli undici arrivavano tutto era bello e pronto."
       },
       {
         "pid": "s051",
-        "text": "Nell'aria si udì un frullar d'ali: arrivarono dodici corvi e si posarono a terra; e come ebbero toccato il suolo si trasformarono nei suoi dodici fratelli liberati da lei."
+        "text": "E poi tenevano ordine in casa, rifacevano i letti, tenevano tutto bello pulito e se ne stavano fra loro con grande gioia e armonia."
       },
       {
         "pid": "s052",
-        "text": "Essi distrussero il rogo, spensero le fiamme, slegarono la loro cara sorella, la baciarono e l'abbracciarono."
+        "text": "Per un po' di tempo i due che restavano a casa preparavano ottimi pranzi e quando tutti erano riuniti, sedevano, mangiavano e bevevano ed erano felici."
       },
       {
         "pid": "s053",
-        "text": "Ora pot‚ schiudere la bocca per parlare e raccontò al re perché‚ prima fosse muta e non avesse mai riso."
+        "text": "Attorno alla casetta fatata c'era un giardino e lì erano cresciuti dodici gigli, di quelli che chiamano gigli Studenten o gigli di S. Antonio, e poiché la fanciulla voleva fare loro una sorpresa, pensò di cogliere dodici fiori per donarli loro a cena."
       },
       {
         "pid": "s054",
-        "text": "Il re si rallegrò che essa fosse innocente e vissero tutti insieme felici e in armonia fino alla morte."
+        "text": "Ma non appena la fanciulla colse i fiori, ecco i dodici fratelli trasformarsi in dodici corvi e volare via sopra il bosco e la casa e il giardino sparire."
       },
       {
         "pid": "s055",
-        "text": "La cattiva matrigna fu messa in una botte piena di olio bollente e di serpenti velenosi e morì di una mala morte."
+        "text": "Così la fanciulla si trovò sola nel bosco e quando si guardò attorno vide che accanto a lei c'era una donnina che le disse:«Bimba mia, cos'hai fatto, perché non hai lasciato stare i dodici fiori bianchi? Quelli erano i tuoi fratelli e ora sono per sempre tramutati in corvi»."
+      },
+      {
+        "pid": "s056",
+        "text": "La fanciulla disse piangendo:«E non c'è nessun modo di salvarli?»."
+      },
+      {
+        "pid": "s057",
+        "text": "«No», disse la vecchia,«in tutto il mondo c'è un solo modo, ma è talmente difficile, che non ci potrai riuscire. Per sette anni dovrai restartene muta, non dovrai né parlare né ridere. Se dirai una sola parola, anche se mancasse una sola ora ai sette anni, sarebbe tutto inutile e i tuoi fratelli morrebbero per quella tua sola parola.»"
+      },
+      {
+        "pid": "s058",
+        "text": "Allora la fanciulla disse in cuor suo:«Sono sicura che ci riuscirò»."
+      },
+      {
+        "pid": "s059",
+        "text": "Andò a cercare un albero alto, si sedette lassù e lì filava e non pronunciava parola e non rideva."
+      },
+      {
+        "pid": "s060",
+        "text": "Un bel giorno passò di lì un figlio di re che cacciava nel bosco."
+      },
+      {
+        "pid": "s061",
+        "text": "Quel principe aveva un grande cane da caccia che lo condusse dritto dritto verso l'albero dove c'era la fanciulla e cominciò a latrare e saltare lì intorno."
+      },
+      {
+        "pid": "s062",
+        "text": "Allora il principe si avvicinò e vide la bella principessa con la stella d'oro in fronte e fu talmente affascinato dalla sua bellezza che le chiese se voleva essere la sua sposa."
+      },
+      {
+        "pid": "s063",
+        "text": "Lei non rispose, ma fece cenno di sì col capo."
+      },
+      {
+        "pid": "s064",
+        "text": "Allora egli salì sull'albero, la portò giù, la mise sul suo cavallo e la portò al castello."
+      },
+      {
+        "pid": "s065",
+        "text": "Si celebrarono le nozze con grandissimo sfarzo, ma la sposa non parlava e non rideva."
+      },
+      {
+        "pid": "s066",
+        "text": "Vissero felici assieme per alcuni anni, ma poi la madre del re, una donna cattiva, cominciò a calunniare la giovane regina e disse al figlio:«È solo una mendicante, quella che ti sei portata a casa, chissà che malefici ti combina in segreto. Se non parla, almeno potrebbe ridere, ma chi non ride ha di certo una cattiva coscienza»."
+      },
+      {
+        "pid": "s067",
+        "text": "Il principe non voleva crederci, ma la vecchia continuava a dirlo e la incolpava di tante cose turpi che infine si lasciò convincere e la condannò a morte."
+      },
+      {
+        "pid": "s068",
+        "text": "Allora nel cortile fu acceso un gran fuoco sul quale doveva essere bruciata la fanciulla, e il principe se ne stava alla finestra con gli occhi pieni di lacrime, perché lui l'amava ancora."
+      },
+      {
+        "pid": "s069",
+        "text": "E quando già era legata al palo e il fuoco le lambiva i vestiti con le sue lingue rosse, stavano per scoccare gli ultimi istanti dei sette anni."
+      },
+      {
+        "pid": "s070",
+        "text": "Allora nell'aria si sentì un frullo d'ali e volando vennero dodici corvi e si abbassarono e quando toccarono terra si tramutarono nei dodici fratelli che lei aveva liberati."
+      },
+      {
+        "pid": "s071",
+        "text": "Essi dispersero il fuoco del rogo, spensero le fiamme e liberarono la sorella, e la baciarono e l'abbracciarono."
+      },
+      {
+        "pid": "s072",
+        "text": "Allora quando potè aprire la bocca e parlare, raccontò al re il perché era diventata muta e perché non poteva ridere."
+      },
+      {
+        "pid": "s073",
+        "text": "Il principe si rallegrò quando udì che era innocente e da allora vissero assieme felici e contenti fino alla morte."
+      },
+      {
+        "pid": "s074",
+        "text": "La cattiva matrigna fu portata a giudizio e messa in una botte piena d'olio bollenti e serpenti velenosi e morì d'una terribile morte."
       }
     ]
   },
