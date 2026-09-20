@@ -50,7 +50,7 @@ async def gen_one(sem, item):
             for attempt in range(4):
                 try:
                     comm = edge_tts.Communicate(text, VOICE)
-                    await comm.save(path)
+                    await asyncio.wait_for(comm.save(path), timeout=45)
                     if os.path.getsize(path) > 200:
                         break
                 except Exception as e:
