@@ -6,7 +6,7 @@ Resume-safe (skips existing). Concurrent with semaphore.
 import asyncio, json, os, sys, time
 import edge_tts
 
-OUT = r"D:/workbuddy工作区/2026-08-23-21-28-02/grimm-fiabe"
+OUT = r"D:/意大利语材料/grimm-fiabe"
 VOICE = "it-IT-ElsaNeural"
 MANIFEST = os.path.join(OUT, "build", "audio_manifest.json")
 CONCURRENCY = 12

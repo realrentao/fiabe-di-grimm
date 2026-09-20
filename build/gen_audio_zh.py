@@ -7,9 +7,9 @@ Resume-safe (skips existing >200 bytes).
 import asyncio, json, os, re, io, time
 import edge_tts
 
-OUT = r"D:/workbuddy工作区/2026-08-23-21-28-02/grimm-fiabe"
+OUT = r"D:/意大利语材料/grimm-fiabe"
 VOICE = "zh-CN-XiaoxiaoNeural"
-IDS = ["01", "02", "03", "04", "05", "06", "07", "08", "09"]
+IDS = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10"]
 CONCURRENCY = 12
 LOG = os.path.join(OUT, "build", "audio_zh_gen.log")
 
