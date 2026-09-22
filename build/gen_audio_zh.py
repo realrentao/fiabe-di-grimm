@@ -9,7 +9,7 @@ import edge_tts
 
 OUT = r"D:/意大利语材料/grimm-fiabe"
 VOICE = "zh-CN-XiaoxiaoNeural"
-IDS = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15"]
+IDS = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16"]
 CONCURRENCY = 12
 LOG = os.path.join(OUT, "build", "audio_zh_gen.log")
 
