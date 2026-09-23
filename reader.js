@@ -6,7 +6,7 @@
 
   function $(id) { return document.getElementById(id); }
   function esc(s) {
-    return (s || '').replace(/[&<>"]/g, function (c) {
+    return (s || '').replace(/[&<>]/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
     });
   }
@@ -136,6 +136,21 @@
 
   // ---------- player ----------
   var audio = $('audio');
+  // 预加载：提前抓取下一句 / 意中交替的下一音频，消除段落切换与“意→中”间隙（感知更快）
+  var preAudio = new Audio(); preAudio.preload = 'auto';
+  function setPre(u) { if (!u) return; preAudio.src = u; try { preAudio.load(); } catch (e) {} }
+  function preloadUpcoming() {
+    if (cur < 0 || !paras) return;
+    var ni = cur + 1;
+    if (prefs.lang === 'it') {
+      if (ni < paras.length) setPre(paras[ni].audio);
+    } else if (prefs.lang === 'zh') {
+      if (ni < paras.length) setPre((paras[ni].audio_zh && paras[ni].audio_zh.length) ? paras[ni].audio_zh : paras[ni].audio);
+    } else { // alt：当前意语播完 → 中文，再 → 下一句意语
+      if (!altZhDone && paras[cur].audio_zh && paras[cur].audio_zh.length) setPre(paras[cur].audio_zh);
+      else if (ni < paras.length) setPre(paras[ni].audio);
+    }
+  }
   var cur = -1;          // 当前段落
   var playing = false;
   var playAll = false;    // 播放全篇模式：从第一句连续播到结尾
@@ -178,7 +193,9 @@
     altZhDone = false;
     loadingNext = true;            // 换源过程中的过渡暂停不展示菜单
     setAudioSrc(p);
+    preloadUpcoming();            // 提前抓取下一段 / 意中交替下一音频
     try { audio.load(); } catch (e) {}
+    audio.defaultPlaybackRate = prefs.rate; audio.playbackRate = prefs.rate;  // 换源后保留用户语速：load() 会把 playbackRate 重置为 defaultPlaybackRate
     if (opts.play) {
       play();
       setTimeout(function () { loadingNext = false; }, 600); // 兜底：play 事件未触发时复位
@@ -223,13 +240,15 @@
   audio.addEventListener('play', function () {
     loadingNext = false;          // 真正恢复播放后解除换源守卫
     playing = true; $('btnPlay').textContent = '❚❚';
-    // 段落切换重启播放时：仅当菜单是"播放自动隐藏"状态才重新倒计时；
-    // 用户正按住菜单或刚唤出菜单时不得打扰
-    if (!holdActive && !userRevealed && !document.body.classList.contains('immersive')) barsHideSoon(1600);
+    // 播放(重)开始即隐藏菜单栏(仅手机/窄屏)；桌面端始终显示。
+    // 这样切换段落、意→中交替间隙都不会再弹出菜单，只有整篇播完才显示。
+    if (!holdActive && !userRevealed) setBars(false);
   });
   audio.addEventListener('pause', function () {
     playing = false; $('btnPlay').textContent = '▶';
-    if (!loadingNext) barsShow();  // 自动换源导致的过渡暂停不展示菜单
+    // 自动换源(loadingNext)或本句自然结束(audio.ended)的过渡暂停都不展示菜单；
+    // 仅用户主动暂停、或整篇播放完毕时才调出菜单
+    if (!loadingNext && !audio.ended) barsShow();
   });
   audio.addEventListener('error', function () { if (cur >= 0) markNoAudio(cur); });
   audio.addEventListener('ended', function () {
@@ -239,7 +258,8 @@
       var p = paras[cur];
       if (p.audio_zh && p.audio_zh.length) {
         loadingNext = true;       // 意→中 换源过渡暂停不展示菜单
-        audio.src = p.audio_zh; audio.load(); play(); altZhDone = true; return;
+        audio.src = p.audio_zh; audio.load();
+        altZhDone = true; play(); preloadUpcoming(); return; // 预取下一句意语
       }
       altZhDone = true; // 无中文音频则跳过中文部分
     }
@@ -256,10 +276,10 @@
     if (audio.duration) audio.currentTime = (this.value / 1000) * audio.duration;
   });
   $('rate').addEventListener('input', function () {
-    prefs.rate = +this.value; audio.playbackRate = prefs.rate; $('rateVal').textContent = prefs.rate.toFixed(2) + '×'; savePrefs();
+    prefs.rate = +this.value; audio.defaultPlaybackRate = prefs.rate; audio.playbackRate = prefs.rate; $('rateVal').textContent = prefs.rate.toFixed(2) + '×'; savePrefs();
   });
   $('btnRateReset').addEventListener('click', function () {
-    prefs.rate = 1; audio.playbackRate = 1; $('rate').value = 1; $('rateVal').textContent = '1.00×'; savePrefs();
+    prefs.rate = 1; audio.defaultPlaybackRate = 1; audio.playbackRate = 1; $('rate').value = 1; $('rateVal').textContent = '1.00×'; savePrefs();
   });
 
   // ---------- 沉浸模式：播放时隐藏上/下栏并折叠占位（阅读区变大），点击阅读区显示 ----------
@@ -368,7 +388,12 @@
     renderContent();
     applyMode();
     applyFont();
-    audio.playbackRate = prefs.rate;
+    audio.defaultPlaybackRate = prefs.rate; audio.playbackRate = prefs.rate;
+    // 提前抓取首句音频，首次播放更即时
+    if (paras && paras.length) {
+      var first = (prefs.lang === 'zh' && paras[0].audio_zh && paras[0].audio_zh.length) ? paras[0].audio_zh : paras[0].audio;
+      setPre(first);
+    }
     // 空闲时预取上/下一篇，切换几乎零等待
     setTimeout(function () {
       [storyIdx - 1, storyIdx + 1].forEach(function (j) {
@@ -381,6 +406,10 @@
   if (store()[sid]) {
     boot();
   } else {
+    // 提前以高优先级预取本篇数据脚本，缩短首屏空白等待
+    var plk = document.createElement('link');
+    plk.rel = 'preload'; plk.as = 'script'; plk.href = 'data/st/' + sid + '.js';
+    document.head.appendChild(plk);
     loadScript('data/st/' + sid + '.js', function (err) {
       if (err) {
         $('content').innerHTML = '<p style="color:#8a1f2b;padding:30px 0">加载失败，请刷新重试。</p>';
