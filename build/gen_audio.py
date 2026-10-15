@@ -35,6 +35,8 @@ async def gen_one(sem, item):
     for para in item["paras"]:
         pid = para["pid"]
         text = para["text"].strip()
+        # poem line-breaks written as " / " must be a PAUSE, not pronounced
+        text = text.replace(" / ", ", ")
         path = os.path.join(out_dir, pid + ".mp3")
         if os.path.exists(path) and os.path.getsize(path) > 200:
             async with lock:
