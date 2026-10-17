@@ -197,7 +197,7 @@
     cur = i; curPart = part; altZhDone = (part === 'zh');
     var off = concatOff(part);
     var seg = off && off[i];
-    if (!seg) { fallbackPlay(i, play); return; }   // 偏移缺失 → 回退逐句
+    if (!seg) { fallbackPlay(i, autoplay); return; }   // 偏移缺失 → 回退逐句
     function doSeek() {
       try { audio.currentTime = seg[0]; } catch (e) {}
       if (autoplay) audio.play();
