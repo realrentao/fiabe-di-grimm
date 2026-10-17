@@ -136,11 +136,17 @@
 
   // ---------- player ----------
   var audio = $('audio');
+  // 合并音频（per-story 单文件）模式：window.__GRIMM_AUDIO_CONCAT__[sid] 提供 it/zh 偏移清单
+  var CONCAT = (window.__GRIMM_AUDIO_CONCAT__ && window.__GRIMM_AUDIO_CONCAT__[sid]) || null;
+  var concatMode = !!CONCAT;
+  var curPart = 'it';           // concat 模式下当前加载的音轨：'it' | 'zh'
+  function concatFile(part) { return part === 'zh' ? CONCAT.zh : CONCAT.it; }
+  function concatOff(part) { return part === 'zh' ? CONCAT.off_zh : CONCAT.off; }
   // 预加载：提前抓取下一句 / 意中交替的下一音频，消除段落切换与“意→中”间隙（感知更快）
   var preAudio = new Audio(); preAudio.preload = 'auto';
   function setPre(u) { if (!u) return; preAudio.src = u; try { preAudio.load(); } catch (e) {} }
   function preloadUpcoming() {
-    if (cur < 0 || !paras) return;
+    if (concatMode || cur < 0 || !paras) return;
     var ni = cur + 1;
     if (prefs.lang === 'it') {
       if (ni < paras.length) setPre(paras[ni].audio);
@@ -178,16 +184,107 @@
       altZhDone = false;
     }
   }
-  function setCur(i, opts) {
-    opts = opts || {};
-    if (!paras || i < 0 || i >= paras.length) return;
-    cur = i;
-    var p = paras[i];
+  // 段落 UI 高亮 / 进度 / 标题
+  function updateParaUI(i) {
     Array.prototype.forEach.call(document.querySelectorAll('.para'), function (el) {
       el.classList.toggle('playing', +el.dataset.idx === i);
     });
     $('readProgress').textContent = '第 ' + (i + 1) + ' 句 / ' + paras.length;
     $('nowTitle').textContent = '第 ' + (i + 1) + ' 句 · ' + story.title_it;
+  }
+  // 合并音频：跳转到第 i 句、音轨 part 的起点并播放
+  function concatSeek(i, part, autoplay) {
+    cur = i; curPart = part; altZhDone = (part === 'zh');
+    var off = concatOff(part);
+    var seg = off && off[i];
+    if (!seg) { fallbackPlay(i, play); return; }   // 偏移缺失 → 回退逐句
+    function doSeek() {
+      try { audio.currentTime = seg[0]; } catch (e) {}
+      if (autoplay) audio.play();
+    }
+    if (audio.dataset.part !== part) {
+      audio.src = concatFile(part);
+      audio.dataset.part = part;
+      audio.load();
+    }
+    if (audio.readyState < 2) {
+      var h = function () { audio.removeEventListener('canplay', h); doSeek(); };
+      audio.addEventListener('canplay', h);
+    } else {
+      doSeek();
+    }
+    updateParaUI(i);
+    scrollToPara(i);
+    audio.loop = false;
+    audio.defaultPlaybackRate = prefs.rate; audio.playbackRate = prefs.rate;
+  }
+  // 逐句回退播放（合并文件缺失/偏移错误时）
+  function fallbackPlay(i, autoplay) {
+    var p = paras[i];
+    cur = i; updateParaUI(i); scrollToPara(i); audio.loop = false;
+    altZhDone = (prefs.lang === 'zh');
+    setAudioSrc(p); preloadUpcoming();
+    try { audio.load(); } catch (e) {}
+    audio.defaultPlaybackRate = prefs.rate; audio.playbackRate = prefs.rate;
+    if (autoplay) audio.play();
+  }
+  // 合并模式：本句片段播放到边界后的处理（单句停 / 连播进下句 / 意中交替）
+  var rafId = null;
+  function concatTick() {
+    if (!concatMode || cur < 0 || !playing) { rafId = null; return; }
+    concatBoundaryCheck();
+    if (concatMode && cur >= 0 && playing) rafId = requestAnimationFrame(concatTick);
+    else rafId = null;
+  }
+  function concatSegmentFinished() {
+    if (prefs.lang === 'alt' && curPart === 'it' && !altZhDone) {
+      var hasZh = paras[cur].audio_zh && paras[cur].audio_zh.length;
+      if (hasZh) { concatSeek(cur, 'zh', true); altZhDone = true; return; }
+      altZhDone = true;
+    }
+    if (prefs.cont || playAll) {
+      if (cur < paras.length - 1) {
+        // 句子边界处暂停，稍作停顿（文件内无物理停顿，停顿在播放端插入）再进下句
+        var gap = (CONCAT && CONCAT.gap) ? CONCAT.gap : 0.3;
+        loadingNext = true;          // 过渡暂停不弹菜单 / 不翻按钮
+        audio.pause(); playing = false;
+        if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        setTimeout(function () {
+          concatSeek(cur + 1, (prefs.lang === 'zh') ? 'zh' : 'it', true);
+        }, Math.max(0, gap) * 1000);
+        return;
+      } else finishPlay();
+    } else finishPlay();
+  }
+  function finishPlay() {
+    if (prefs.loop && cur >= 0) {
+      if (concatMode) { concatSeek(cur, curPart, true); return; }
+      audio.currentTime = 0; play(); return;
+    }
+    playing = false; playAll = false;
+    $('btnPlay').textContent = '▶';
+    var pa = document.getElementById('btnPlayAll'); if (pa) pa.classList.remove('active');
+    barsShow();
+  }
+  function concatBoundaryCheck() {
+    if (!concatMode || cur < 0 || loadingNext) return;
+    var off = concatOff(curPart);
+    var seg = off && off[cur];
+    if (!seg) return;
+    var continuous = (prefs.cont || playAll);
+    var limit = continuous ? ((cur < paras.length - 1) ? off[cur + 1][0] : seg[1]) : seg[1];
+    if (audio.currentTime >= limit - 0.04) concatSegmentFinished();
+  }
+  function setCur(i, opts) {
+    opts = opts || {};
+    if (!paras || i < 0 || i >= paras.length) return;
+    if (concatMode) {
+      concatSeek(i, (prefs.lang === 'zh') ? 'zh' : 'it', opts.play);
+      return;
+    }
+    cur = i;
+    var p = paras[i];
+    updateParaUI(i);
     scrollToPara(i);
     audio.loop = false;
     altZhDone = false;
@@ -204,7 +301,10 @@
     }
   }
   function play() {
-    if (cur < 0) { setCur(0, { play: false }); }
+    if (cur < 0) {
+      if (concatMode) concatSeek(0, (prefs.lang === 'zh') ? 'zh' : 'it', false);
+      else setCur(0, { play: false });
+    }
     audio.play().then(function () { playing = true; $('btnPlay').textContent = '❚❚'; })
       .catch(function () { playing = false; $('btnPlay').textContent = '▶'; });
   }
@@ -216,11 +316,11 @@
     if (el) el.classList.add('noaudio');
   }
 
-  $('btnPlay').addEventListener('click', toggle);
+  $('btnPlay').addEventListener('click', function () { toggle(); if (document.activeElement === this) this.blur(); });
   $('btnPlayAll').addEventListener('click', function () { playAll = true; $('btnPlayAll').classList.add('active'); setCur(0, { play: true }); });
   $('btnPrevPara').addEventListener('click', function () { if (cur > 0) { playAll = false; $('btnPlayAll').classList.remove('active'); setCur(cur - 1, { play: playing }); } });
   $('btnNextPara').addEventListener('click', function () { if (cur < paras.length - 1) { playAll = false; $('btnPlayAll').classList.remove('active'); setCur(cur + 1, { play: playing }); } });
-  $('btnRepeat').addEventListener('click', function () { if (cur >= 0) { audio.currentTime = 0; play(); } });
+  $('btnRepeat').addEventListener('click', function () { if (cur >= 0) { if (concatMode) concatSeek(cur, curPart, true); else { audio.currentTime = 0; play(); } } });
 
   $('content').addEventListener('click', function (e) {
     var playBtn = e.target.closest('[data-play]');
@@ -240,18 +340,23 @@
   audio.addEventListener('play', function () {
     loadingNext = false;          // 真正恢复播放后解除换源守卫
     playing = true; $('btnPlay').textContent = '❚❚';
+    if (concatMode && cur >= 0) { if (rafId) cancelAnimationFrame(rafId); rafId = requestAnimationFrame(concatTick); }
     // 播放(重)开始即隐藏菜单栏(仅手机/窄屏)；桌面端始终显示。
     // 这样切换段落、意→中交替间隙都不会再弹出菜单，只有整篇播完才显示。
     if (!holdActive && !userRevealed) setBars(false);
   });
   audio.addEventListener('pause', function () {
-    playing = false; $('btnPlay').textContent = '▶';
+    playing = false;
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    // 过渡停顿(loadingNext)期间按钮保持 ❚❚，不弹菜单
+    if (!loadingNext) $('btnPlay').textContent = '▶';
     // 自动换源(loadingNext)或本句自然结束(audio.ended)的过渡暂停都不展示菜单；
     // 仅用户主动暂停、或整篇播放完毕时才调出菜单
     if (!loadingNext && !audio.ended) barsShow();
   });
   audio.addEventListener('error', function () { if (cur >= 0) markNoAudio(cur); });
   audio.addEventListener('ended', function () {
+    if (concatMode) { finishPlay(); return; }   // 合并模式：片段边界由 timeupdate 处理，ended 即整篇结束
     if (prefs.loop && cur >= 0) { audio.currentTime = 0; play(); return; }
     // 意中交替：本句意语播完 → 接着播中文，再进下一句
     if (prefs.lang === 'alt' && !altZhDone && cur >= 0) {
@@ -271,9 +376,18 @@
     $('seek').value = Math.round((audio.currentTime / audio.duration) * 1000);
     $('tCur').textContent = fmt(audio.currentTime);
     $('tDur').textContent = fmt(audio.duration);
+    if (concatMode) concatBoundaryCheck();
   });
   $('seek').addEventListener('input', function () {
-    if (audio.duration) audio.currentTime = (this.value / 1000) * audio.duration;
+    if (!audio.duration) return;
+    var t = (this.value / 1000) * audio.duration;
+    if (concatMode) {
+      var off = concatOff(curPart);
+      for (var k = 0; k < off.length; k++) {
+        if (t >= off[k][0] && t < off[k][1]) { cur = k; updateParaUI(k); break; }
+      }
+    }
+    audio.currentTime = t;
   });
   $('rate').addEventListener('input', function () {
     prefs.rate = +this.value; audio.defaultPlaybackRate = prefs.rate; audio.playbackRate = prefs.rate; $('rateVal').textContent = prefs.rate.toFixed(2) + '×'; savePrefs();
@@ -363,10 +477,14 @@
   });
   document.addEventListener('keydown', function (e) {
     if (e.target.tagName === 'INPUT') return;
-    if (e.code === 'Space') { e.preventDefault(); toggle(); }
+    if (e.code === 'Space') {
+      // 焦点在按钮上时，按钮自身的 click 已触发 toggle，此处直接放行避免双重触发
+      if (e.target.tagName === 'BUTTON' || (e.target.closest && e.target.closest('.btn'))) return;
+      e.preventDefault(); toggle();
+    }
     else if (e.code === 'ArrowLeft') { if (cur > 0) setCur(cur - 1, { play: playing }); }
     else if (e.code === 'ArrowRight') { if (cur < paras.length - 1) setCur(cur + 1, { play: playing }); }
-    else if (e.key === 'r' || e.key === 'R') { if (cur >= 0) { audio.currentTime = 0; play(); } }
+    else if (e.key === 'r' || e.key === 'R') { if (cur >= 0) { if (concatMode) concatSeek(cur, curPart, true); else { audio.currentTime = 0; play(); } } }
   });
 
   // ---------- init ----------
@@ -389,8 +507,10 @@
     applyMode();
     applyFont();
     audio.defaultPlaybackRate = prefs.rate; audio.playbackRate = prefs.rate;
-    // 提前抓取首句音频，首次播放更即时
-    if (paras && paras.length) {
+    // 提前抓取首句 / 合并音频，首次播放更即时
+    if (concatMode) {
+      audio.src = CONCAT.it; audio.dataset.part = 'it'; curPart = 'it'; audio.load();
+    } else if (paras && paras.length) {
       var first = (prefs.lang === 'zh' && paras[0].audio_zh && paras[0].audio_zh.length) ? paras[0].audio_zh : paras[0].audio;
       setPre(first);
     }
